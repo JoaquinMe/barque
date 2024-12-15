@@ -1,5 +1,5 @@
 # Barque v1.8.5
-
+Fork of https://github.com/enormandeau/barque
 ## Environmental DNA metabarcoding analysis
 
 ![Barque](https://raw.githubusercontent.com/enormandeau/barque/master/00_archive/barque_small.png)
@@ -58,20 +58,11 @@ custom database. If for some reason species annotations are not possible,
 
 ## Installation
 
-To use **Barque**, you will need a local copy of its repository. Different
-releases can be [found here](https://github.com/enormandeau/barque/tags).  It
-is recommended to always use the latest release, even the development version.
-You can either download an archive of the latest release at the above link or
-get the latest commit (recommended) with the following git command:
-
 ```
-git clone https://github.com/enormandeau/barque
+git clone https://github.com/JoaquinMe/barque
 ```
 
 ### Dependencies
-
-To run **Barque**, you will also need to have the following programs installed
-on your computer.
 
 - **Barque** will only work on GNU Linux or OSX
 - bash 4+
