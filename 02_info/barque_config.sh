@@ -6,10 +6,10 @@
 # It is a good idea to try to run Barque with different parameters 
 
 # Global parameters
-NCPUS=40                    # Number of CPUs to use. A lot of the steps are parallelized (int, 1+)
+NCPUS=2                    # Number of CPUs to use. A lot of the steps are parallelized (int, 1+)
 PRIMER_FILE="02_info/primers.csv" # File with PCR primers information
 
-# Skip data preparation and rerun only from vsearchp
+# Skip data preparation and rerun only from vsearch
 SKIP_DATA_PREP=0            # 1 to skip data preparation steps, 0 to run full pipeline (recommended)
 
 # Filtering with Trimmomatic
