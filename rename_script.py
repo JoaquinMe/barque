@@ -3,12 +3,13 @@ import sys
 
 cwd = os.getcwd()
 targetfolder = sys.argv[1]
+project_name = sys.argv[2]
 
 folder = cwd + "/" + targetfolder
 
-project_name = "stream"
-
 files = os.listdir(folder)
+files = [file for file in files if file.endswith(".fastq.gz")]
+
 for file in files:
     sampleID = file.split("_")[0]
     R = (file.split(".")[0]).split("_")[1]

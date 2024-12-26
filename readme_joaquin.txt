@@ -15,9 +15,9 @@ git clone https://github.com/JoaquinMe/barque
 - Instalar dependencias
 - Descargar barque
 
-# Preparar muestras 
+# Preparar muestras
 ./descargar_multiple.sh accessions.txt 04_data
-python3 rename_script.py 04_data
+python3 rename_script.py 04_data peces
 
 # Primers
 Editar 02_info/primers.csv para dar información de los primers
