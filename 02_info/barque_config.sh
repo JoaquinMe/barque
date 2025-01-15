@@ -13,7 +13,7 @@ PRIMER_FILE="02_info/primers.csv" # File with PCR primers information
 SKIP_DATA_PREP=0 # 1 to skip data preparation steps, 0 to run full pipeline (recommended)
 
 # Filtering with Trimmomatic
-CROP_LENGTH=150 # Cut reads to this length after filtering. Just under amplicon length
+CROP_LENGTH=130 # Cut reads to this length after filtering. Just under amplicon length
 
 # Merging reads with flash
 MIN_OVERLAP=30  # Minimum number of overlapping nucleotides to merge reads (int, 1+)
@@ -43,5 +43,5 @@ NUM_NON_ANNOTATED_SEQ=200 # Number of unique most-frequent non-annotated reads t
 MIN_DEPTH_MULTI=10 # Min depth to report unique reads per sample in multiple hit reports
 
 # OTUs
-SKIP_OTUS=1         # 1 to skip OTU creation, 0 to use it
+SKIP_OTUS=0         # 1 to skip OTU creation, 0 to use it
 MIN_SIZE_FOR_OTU=20 # Only unique reads with at least this coverage will be used for OTUs

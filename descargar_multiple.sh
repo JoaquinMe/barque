@@ -17,23 +17,23 @@ fi
 file=$1
 outfile=$2
 echo "prefetching..."
-while read line;do
-  prefetch $line;
-done<$file
+while read -r line; do
+  prefetch "$line"
+done <"$file"
 
 mkdir -p "$outfile"
 echo "cleaning up..."
-for folder in SRR*/;do
-  cp "$folder"* $outfile 
+for folder in *RR*/; do
+  cp "$folder"* "$outfile"
   rm -rf "$folder"
 done
 
 echo "extracting .fastq from .sra"
-for file in $outfile/*.sra;do
-  fastq-dump "$file" --split-files --skip-technical --outdir $outfile 
+for file in "$outfile"/*.sra; do
+  fastq-dump "$file" --split-files --skip-technical --outdir "$outfile"
   rm "$file"
 done
 
 echo "gzip on fastq files.."
-gzip $outfile/*.fastq
+gzip "$outfile"/*.fastq
 echo "Done"
