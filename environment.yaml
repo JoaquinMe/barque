@@ -1,0 +1,15 @@
+name: barque
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.9
+  - biopython=1.79
+  - flash=1.2.11
+  - r-base=4.2.3
+  - r-distutils=1.0
+  - vsearch=2.29.1
+  - sra-tools=3.1.1
+  - parallel=20241122
+  - java-jdk=8.0.112
