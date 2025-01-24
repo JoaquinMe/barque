@@ -13,3 +13,4 @@ dependencies:
   - sra-tools=3.1.1
   - parallel=20241122
   - java-jdk=8.0.112
+  - pandas=2.2.3
