@@ -11,8 +11,7 @@ INFO_FOLDER="02_info"
 OTU_FOLDER="13_otu_database"
 
 # Find best hit in database using vsearch
-for amplicon in $(grep -v "^#" "$INFO_FOLDER"/primers.csv | awk -F "," '{print $1}')
-do
+for amplicon in $(grep -v "^#" "$INFO_FOLDER"/primers.csv | awk -F "," '{print $1}'); do
     echo "Blasting $amplicon"
     name="$OTU_FOLDER"/"$amplicon"
     database=$(grep -v "^#" "$INFO_FOLDER"/primers.csv | grep "$amplicon" | awk -F "," '{print $6}').fasta.gz
@@ -26,7 +25,7 @@ do
 
     # Run vsearch
     vsearch_input="$name".otus.renamed.fasta
-    vsearch_result="$name".otus.vsearch.fasta
+    vsearch_result="$name".otus.vsearch.tsv
     vsearch_matched="$name".otus.vsearch.matched.fasta
     echo "Running vsearch on $name.otus.renamed.gz with database $database"
     vsearch --usearch_global "$vsearch_input" -db 03_databases/"$database" \
@@ -35,7 +34,11 @@ do
         --dbmatched "$vsearch_matched" \
         --maxaccepts "$MAX_ACCEPTS" --maxrejects "$MAX_REJECTS" --maxhits "$MAX_ACCEPTS" \
         --query_cov "$QUERY_COV" --fasta_width 0 --minseqlength 20
-        echo "done"
-        echo "--"
+    echo "done"
+    echo "--"
+    {
+        printf "query\ttarget\tpercent_id\talnlen\tmism\topens\tqlo\tqhi\ttlo\tthi\tevalue\tbits\n"
+        cat "$vsearch_result"
+    } >temp && mv temp "$vsearch_result"
     echo
 done
