@@ -62,7 +62,7 @@ for otu in otu_dict:
             otu_dict[otu] = species_list[0]
             continue
 
-    # Species
+    # genus
     if best_similarity >= genus_threshold:
         genus_list = list(
             set(["_".join(x[2].split("_")[:2]) + "_unknown" for x in infos])
@@ -71,7 +71,7 @@ for otu in otu_dict:
             otu_dict[otu] = genus_list[0]
             continue
 
-    # Species
+    # phylum
     if best_similarity >= phylum_threshold:
         phylum_list = list(
             set(["_".join(x[2].split("_")[:1]) + "_unknown_unknown" for x in infos])
@@ -98,7 +98,7 @@ with open(otu_fasta) as infile:
                 if not taxon:
                     taxon = "unknown_unknown_unknown"
 
-                outfile.write(">" + taxon + "-" + otu_name + "\n")
+                outfile.write(">" + str(taxon) + "-" + otu_name + "\n")
 
             else:
                 outfile.write(line)

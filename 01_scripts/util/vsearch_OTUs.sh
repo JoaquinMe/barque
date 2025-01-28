@@ -36,9 +36,5 @@ for amplicon in $(grep -v "^#" "$INFO_FOLDER"/primers.csv | awk -F "," '{print $
         --query_cov "$QUERY_COV" --fasta_width 0 --minseqlength 20
     echo "done"
     echo "--"
-    {
-        printf "query\ttarget\tpercent_id\talnlen\tmism\topens\tqlo\tqhi\ttlo\tthi\tevalue\tbits\n"
-        cat "$vsearch_result"
-    } >temp && mv temp "$vsearch_result"
     echo
 done
