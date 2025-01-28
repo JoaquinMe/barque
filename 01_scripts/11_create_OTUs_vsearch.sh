@@ -8,8 +8,7 @@ AMPLICON_FOLDER="07_split_amplicons"
 OTU_FOLDER="13_otu_database"
 
 # Import configfile
-if [ -s "$CONFIG_FILE" ]
-then
+if [ -s "$CONFIG_FILE" ]; then
     source "$CONFIG_FILE"
 else
     echo -e "\nBARQUE: Config file does not exist or is empty."
@@ -21,8 +20,7 @@ fi
 rm -rf "$OTU_FOLDER"/* 2>/dev/null
 mkdir "$OTU_FOLDER" 2>/dev/null
 
-for amplicon in $(grep -v "^#" "$INFO_FOLDER"/primers.csv | awk -F "," '{print $1}')
-do
+for amplicon in $(grep -v "^#" "$INFO_FOLDER"/primers.csv | awk -F "," '{print $1}'); do
     name="$OTU_FOLDER"/"$amplicon"
     echo
     echo "####"
@@ -30,7 +28,7 @@ do
 
     # Concatenate 07_split_amplicons/*_merged_"$amplicon".fastq.gz
     echo "BARQUE: Concatenating all amplicon files"
-    cat "$AMPLICON_FOLDER"/*_merged_"$amplicon".fastq.gz > "$name".fastq.gz
+    cat "$AMPLICON_FOLDER"/*_merged_"$amplicon".fastq.gz >"$name".fastq.gz
 
     # Transform to fasta.gz
     echo "BARQUE: Transforming to fasta file"
@@ -96,12 +94,11 @@ echo "BARQUE: Blasting OTUs"
 
 # Create OTUs database
 echo "BARQUE: Creating OTU databases"
-for amplicon in $(grep -v "^#" "$INFO_FOLDER"/primers.csv | awk -F "," '{print $1}')
-do
+for amplicon in $(grep -v "^#" "$INFO_FOLDER"/primers.csv | awk -F "," '{print $1}'); do
     name="$OTU_FOLDER"/"$amplicon"
 
     ./01_scripts/util/create_OTU_database.py \
-        "$name".otus.vsearch.fasta \
+        "$name".otus.vsearch.tsv \
         "$name".otus.renamed.fasta \
         "$name".otus.database.fasta \
         "$PRIMER_FILE" \

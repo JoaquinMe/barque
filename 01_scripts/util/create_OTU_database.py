@@ -5,18 +5,18 @@ Usage:
     <program> vsearch_output otu_fasta output_database primer_file amplicon
 """
 
+import sys
 # Modules
 from collections import defaultdict
 from copy import deepcopy
-import sys
 
 # Parse user input
 try:
-    vsearch_output = sys.argv[1]
-    otu_fasta = sys.argv[2]
-    output_database = sys.argv[3]
-    primer_file = sys.argv[4]
-    amplicon = sys.argv[5]
+    vsearch_output = sys.argv[1]  # "$name".otus.vsearch.fasta
+    otu_fasta = sys.argv[2]  # "$name".renamed.fasta
+    output_database = sys.argv[3]  # "$name".otus.database.fasta
+    primer_file = sys.argv[4]  # "$PRIMER_FILE"
+    amplicon = sys.argv[5]  # "$amplicon"
 except:
     print(__doc__)
     sys.exit(1)
@@ -64,14 +64,18 @@ for otu in otu_dict:
 
     # Species
     if best_similarity >= genus_threshold:
-        genus_list = list(set(["_".join(x[2].split("_")[:2]) + "_unknown" for x in infos]))
+        genus_list = list(
+            set(["_".join(x[2].split("_")[:2]) + "_unknown" for x in infos])
+        )
         if len(genus_list) == 1:
             otu_dict[otu] = genus_list[0]
             continue
 
     # Species
     if best_similarity >= phylum_threshold:
-        phylum_list = list(set(["_".join(x[2].split("_")[:1]) + "_unknown_unknown" for x in infos]))
+        phylum_list = list(
+            set(["_".join(x[2].split("_")[:1]) + "_unknown_unknown" for x in infos])
+        )
         if len(phylum_list) == 1:
             otu_dict[otu] = phylum_list[0]
             continue
