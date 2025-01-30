@@ -4,7 +4,7 @@
 # - Short reads
 
 # Global variables
-BASE=$(basename $1)
+BASE=$(basename "$1")
 MIN_HIT_LENGTH=$2
 CROP_LENGTH=$3
 TRIMMOMATIC_JAR="01_scripts/util/trimmomatic-0.36.jar"
@@ -25,7 +25,8 @@ java -XX:ParallelGCThreads=1 -cp "$TRIMMOMATIC_JAR" org.usadellab.trimmomatic.Tr
     TRAILING:20 \
     SLIDINGWINDOW:20:20 \
     MINLEN:"$MIN_HIT_LENGTH" \
-    CROP:"$CROP_LENGTH"
+    CROP:"$CROP_LENGTH" \
+    -trimlog "$TRIMMED_FOLDER"/"${BASE%_}".log
 
 ## Cleanup
 rm "$TRIMMED_FOLDER"/"$BASE"R1_001.single.fastq.gz 2>/dev/null
