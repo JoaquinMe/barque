@@ -25,7 +25,8 @@ java -XX:ParallelGCThreads=1 -cp "$TRIMMOMATIC_JAR" org.usadellab.trimmomatic.Tr
     TRAILING:20 \
     SLIDINGWINDOW:20:20 \
     MINLEN:"$MIN_HIT_LENGTH" \
-    CROP:"$CROP_LENGTH"
+    CROP:"$CROP_LENGTH" \
+    -trimlog "$TRIMMED_FOLDER"/"${BASE%_}".log
 
 ## Cleanup
 rm "$TRIMMED_FOLDER"/"$BASE"R1_001.single.fastq.gz 2>/dev/null
