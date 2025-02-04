@@ -12,7 +12,7 @@ from copy import deepcopy
 
 # Parse user input
 try:
-    vsearch_output = sys.argv[1]  # "$name".otus.vsearch.fasta
+    vsearch_output = sys.argv[1]  # "$name".otus.vsearch.tsv
     otu_fasta = sys.argv[2]  # "$name".renamed.fasta
     output_database = sys.argv[3]  # "$name".otus.database.fasta
     primer_file = sys.argv[4]  # "$PRIMER_FILE"
