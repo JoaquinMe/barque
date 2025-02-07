@@ -49,21 +49,53 @@ En 14_tests hay modelos de estos archivos para cada primer.
 
 ## 02_info/barque_config.sh
 
+### Parámetros globales
+
 - NCPUS: número de CPUs para usar. Muchos de los procesos de barque se paralelizan.
 - PRIMER_FILE: Archivo con la información de los primers. Recomendable no cambiar esta opción.
+
+### Saltear preparación de datos
+
 - SKIP_DATA_PREP: 1 para saltear preparación de datos. 0 para correr todo el pipeline.
+
+### Filtrado con Trimmomatic
+
 - CROP_LENGTH: cortar reads a esta longitud despues de filtrar.
-- MIN_OVERLAP:
-- MAX_OVERLAP:
-- MAX_PRIMER_DIFF:
-- SKIP_CHIMERA_DETECTION:
-- MAX_ACCEPTS:
-- MAX_REJECTS:
-- QUERY_COV:
-- MIN_HIT_LENGTH:
-- MIN_HITS_SAMPLE:
-- MIN_HITS_EXPERIMENT:
-- NUM_NON_ANNOTATED_SEQ:
-- MIN_DEPTH_MULTI:
-- SKIP_OTUS:
-- MIN_SIZE_FOR_OTU:
+
+### Merge reads con flash
+
+- MIN_OVERLAP: número mínimo de nucleótidos que se pueden superponer al mergear (FLASH)
+- MAX_OVERLAP: número máximo de nucleótidos que se pueden superponer al mergear (FLASH)
+
+### Extracción de amplicones
+
+- MAX_PRIMER_DIFF: número máximo de diferencias entre el primer y la secuencia
+
+### Quimeras
+
+- SKIP_CHIMERA_DETECTION: 1 para saltear detección de quimeras. 0 para detectar quimeras.
+
+### vsearch
+
+- MAX_ACCEPTS: controla cuantos matches son aceptados antes de parar la búsqueda.
+- MAX_REJECTS: controla cuantos no-matches son permitidos antes de parar la búsqueda.
+- QUERY_COV: determina cuanta cobertura del query sobre el match para considerarlo accept o reject.
+- MIN_HIT_LENGTH: limita la cantidad de matches reportados por query
+
+### Filtros
+
+- MIN_HITS_SAMPLE: es el número mínimo de coincidencias que un taxón debe tener en al menos una muestra para que el taxón se conserve
+- MIN_HITS_EXPERIMENT: es el número mínimo de coincidencias que un taxón debe tener en todas las muestras combinadas para que el taxón se conserve.
+
+### Non-annotated
+
+- NUM_NON_ANNOTATED_SEQ: cantidad de reads no anotados mas frecuentas que se deben guardar.
+
+### Multiple_hits
+
+- MIN_DEPTH_MULTI: profundidad mínima con la cual reportar reads únicos por sample
+
+### OTUs
+
+- SKIP_OTUS: 1 para saltearse OTUs, 0 para usarla
+- MIN_SIZE_FOR_OTU: tamaño mínimo del OTU para definirlo como tal
