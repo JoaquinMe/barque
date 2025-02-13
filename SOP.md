@@ -1,3 +1,5 @@
+# Barque
+
 https://github.com/JoaquinMe/barque
 
 Barque is a fast eDNA metabarcoding analysis pipeline that first denoises and then annotates ASVs or OTUs, using high-quality barcoding databases.
@@ -18,11 +20,46 @@ git clone https://github.com/JoaquinMe/barque
 
 Usando conda(https://docs.conda.io/projects/conda/en/stable/user-guide/install/index.html)
 
-```
+```bash
 cd barque/
-conda env create -f environment.yaml
+conda env create --name barque --file environment.yaml
+conda activate barque
+```
+
+# Correr Tests
+
+```bash
+git clone https://github.com/JoaquinMe/barque_tests
+cd  barque_tests/
+conda activate barque
+python run_tests.py
+```
+
+# Correr Barque
+
+- Copiar las muestras demultiplexadas a 04_data.
+- Se necesitan un par de archivos por muestra. (F y R)
+- Las secuencias contenidas en estos archivos deben contener los primers usados en el PCR.
+- Es posible que se tenga que demultiplexar antes de correr Barque.
+
+_El nombre de los archivos debe cumplir con este formato:_
 
 ```
+MuestraID_*_R1_001.fastq.gz
+MuestraID_*_R2_001.fastq.gz
+```
+
+- Cambiar los archivos de configuración a preferencia.
+- Ejecutar barque:
+
+```bash
+./barque 02_info/barque_config.sh
+```
+
+## Nota:
+
+- Cada nombre de muestra, o MuestraID no tiene que contener ningún guión bajo (\_).
+- El asterisco (\*) puede ser cualquier texto alfanumérico
 
 # Archivos de configuración
 
