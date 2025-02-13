@@ -19,13 +19,15 @@ Where:
 
 # Silencing distutils deprecation warning
 import warnings
+
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-from distutils.version import LooseVersion
-from collections import defaultdict
 import gzip
-import sys
 import os
+import sys
+from collections import defaultdict
+from distutils.version import LooseVersion
+
 
 # Defining functions
 def myopen(infile, mode="rt"):
@@ -33,6 +35,7 @@ def myopen(infile, mode="rt"):
         return gzip.open(infile, mode=mode)
     else:
         return open(infile, mode=mode)
+
 
 # Parsing user input
 try:
@@ -74,7 +77,11 @@ for primer in primers:
     multiple_hits_global_infos = defaultdict(list)
 
     # Get minimum similarity for the primer
-    primer_info = [x.strip().split(",") for x in open(primer_file).readlines() if x.startswith(primer + ",")][0]
+    primer_info = [
+        x.strip().split(",")
+        for x in open(primer_file).readlines()
+        if x.startswith(primer + ",")
+    ][0]
     min_species_similarity = 100 * float(primer_info[6])
     min_genus_similarity = 100 * float(primer_info[7])
     min_phylum_similarity = 100 * float(primer_info[8])
@@ -85,9 +92,17 @@ for primer in primers:
     phylum_dictionary[primer] = {}
 
     # List result files for primer
-    primer_results = [filename for filename in result_files if "_" + primer + "_" in filename]
-    primer_results = [filename for filename in primer_results if not (filename.endswith("_matched.fasta.gz")
-            or filename.endswith("_matched.fasta"))]
+    primer_results = [
+        filename for filename in result_files if "_" + primer + "_" in filename
+    ]
+    primer_results = [
+        filename
+        for filename in primer_results
+        if not (
+            filename.endswith("_matched.fasta.gz")
+            or filename.endswith("_matched.fasta")
+        )
+    ]
 
     # Iterate through result files for primer
     for result_file in primer_results:
@@ -119,20 +134,41 @@ for primer in primers:
             best_score = max([float(x[1]) for x in sequence_dict[seq]])
 
             # Find best species, genus or phylum
-            best_species = set(["_".join(x[0].split("_")[:3]) for x in sequence_dict[seq]
-                if (float(x[1]) == best_score
-                    and float(x[1]) >= min_species_similarity
-                    and int(x[2]) >= min_length)])
+            best_species = set(
+                [
+                    "_".join(x[0].split("_")[:3])
+                    for x in sequence_dict[seq]
+                    if (
+                        float(x[1]) == best_score
+                        and float(x[1]) >= min_species_similarity
+                        and int(x[2]) >= min_length
+                    )
+                ]
+            )
 
-            best_genus = set(["_".join(x[0].split("_")[:2]) for x in sequence_dict[seq]
-                if (float(x[1]) == best_score
-                    and float(x[1]) >= min_genus_similarity
-                    and int(x[2]) >= min_length)])
+            best_genus = set(
+                [
+                    "_".join(x[0].split("_")[:2])
+                    for x in sequence_dict[seq]
+                    if (
+                        float(x[1]) == best_score
+                        and float(x[1]) >= min_genus_similarity
+                        and int(x[2]) >= min_length
+                    )
+                ]
+            )
 
-            best_phylum = set([x[0].split("_")[0] for x in sequence_dict[seq]
-                if (float(x[1]) == best_score
-                    and float(x[1]) >= min_phylum_similarity
-                    and int(x[2]) >= min_length)])
+            best_phylum = set(
+                [
+                    x[0].split("_")[0]
+                    for x in sequence_dict[seq]
+                    if (
+                        float(x[1]) == best_score
+                        and float(x[1]) >= min_phylum_similarity
+                        and int(x[2]) >= min_length
+                    )
+                ]
+            )
 
             # Species level identification
             if len(best_species) == 1:
@@ -146,18 +182,24 @@ for primer in primers:
                 phylum_dictionary[primer][sample][phylum] += count
 
                 # Collect similarity per species and write to file at the end
-                similarity_dict[(result_file.split("_")[0], primer, species, str(best_score))] += count
+                similarity_dict[
+                    (result_file.split("_")[0], primer, species, str(best_score))
+                ] += count
 
             # Summaryze multiple hits
             elif len(best_species) > 1:
 
-                species = "zMultiple_Hits_" + " : ".join(sorted(list(best_species))).replace("_", "^")
+                species = "zMultiple_Hits_" + " : ".join(
+                    sorted(list(best_species))
+                ).replace("_", "^")
                 species_dictionary[primer][sample][species] += count
                 multiple_hits_species[";".join(sorted(list(best_species)))] += count
-                #similarity_dict[(result_file.split("_")[0], primer, species.replace(" ", "").replace("^", "_"), str(best_score))] += count
+                # similarity_dict[(result_file.split("_")[0], primer, species.replace(" ", "").replace("^", "_"), str(best_score))] += count
 
                 # Gather multiple hit infos
-                multiple_hits_global_infos[";".join(list(best_species))].append((sample, seq))
+                multiple_hits_global_infos[";".join(list(best_species))].append(
+                    (sample, seq)
+                )
 
                 # Genus level identification
                 if len(best_genus) == 1:
@@ -293,18 +335,20 @@ for primer in sorted(species_dictionary):
 
     # Print results to file
     # Species
-    with open(os.path.join(output_folder, primer + "_species_table.csv"), "wt") as outfile:
+    with open(
+        os.path.join(output_folder, primer + "_species_table.csv"), "wt"
+    ) as outfile:
         header = [line for line in species_table if line[0].startswith("Group")][0]
         outfile.write(",".join(header) + "\n")
-        species_table = [line for line in species_table if not line[0].startswith("Group")]
+        species_table = [
+            line for line in species_table if not line[0].startswith("Group")
+        ]
         counts = []
 
         for line in sorted(
-                sorted(
-                    species_table,
-                    key=lambda x: int(x[3]),
-                    reverse=True),
-                key=lambda x: x[0]):
+            sorted(species_table, key=lambda x: int(x[3]), reverse=True),
+            key=lambda x: x[0],
+        ):
 
             # Add full taxon name
             if line[0] == "zMultiple":
@@ -321,11 +365,17 @@ for primer in sorted(species_dictionary):
                     outfile.write(prepared_line)
 
         counts_by_sample = [sum(x) for x in zip(*counts)]
-        prepared_line = "Total,reads,by,sample," + ",".join([str(x) for x in counts_by_sample]) + "\n"
+        prepared_line = (
+            "Total,reads,by,sample,"
+            + ",".join([str(x) for x in counts_by_sample])
+            + "\n"
+        )
         outfile.write(prepared_line)
 
     # Genus
-    with open(os.path.join(output_folder, primer + "_genus_table.csv"), "wt") as outfile:
+    with open(
+        os.path.join(output_folder, primer + "_genus_table.csv"), "wt"
+    ) as outfile:
         for line in genus_table:
             prepared_line = ",".join(line) + "\n"
 
@@ -336,7 +386,9 @@ for primer in sorted(species_dictionary):
                 outfile.write(prepared_line)
 
     # Phylum
-    with open(os.path.join(output_folder, primer + "_phylum_table.csv"), "wt") as outfile:
+    with open(
+        os.path.join(output_folder, primer + "_phylum_table.csv"), "wt"
+    ) as outfile:
         for line in phylum_table:
             prepared_line = ",".join(line) + "\n"
 
@@ -347,14 +399,18 @@ for primer in sorted(species_dictionary):
                 outfile.write(prepared_line)
 
     # Export multiple hits infos
-    with open(os.path.join(output_folder, primer + "_multiple_hit_infos.csv"), "wt") as outfile:
+    with open(
+        os.path.join(output_folder, primer + "_multiple_hit_infos.csv"), "wt"
+    ) as outfile:
         for multiple_hit in multiple_hits_global_infos:
             for sequence in multiple_hits_global_infos[multiple_hit]:
                 sample, seq = sequence
                 outfile.write(",".join([multiple_hit, sample, seq]) + "\n")
 
 # Output similarity values per species and site
-with open(os.path.join(output_folder, "similarity_by_species_and_site.tsv"), "wt") as outfile:
+with open(
+    os.path.join(output_folder, "similarity_by_species_and_site.tsv"), "wt"
+) as outfile:
     outfile.write("Sample\tPrimer\tSpecies\tSimilarity\tNumSequences\n")
 
     for s in sorted(similarity_dict):
