@@ -47,8 +47,16 @@ def calculate_percentage_identity(hsps):
     return percentage_identity
 
 
+def entrez_tax_assign(accession):
+    handle = Entrez.efetch(db="nucleotide", id=accession, rettype="gb", retmode="xml")
+    record = Entrez.read(handle)
+    taxonomy = record[0]["GBSeq_taxonomy"]
+    organism = record[0]["GBSeq_organism"]
+    return taxonomy, organism
+
+
 def blast_search(sequence):
-    cols = ["accession", "pid"]
+    cols = ["accession", "pid","tax","org"]
     df = pd.DataFrame(columns=cols)
     # Perform a BLAST search using the NCBIWWW.qblast function
     result_handle = NCBIWWW.qblast("blastn", "nt", sequence)
@@ -61,9 +69,14 @@ def blast_search(sequence):
         for i, alignment in enumerate(blast_record.alignments):
             accession = alignment.accession
             percentage_identity = calculate_percentage_identity(alignment.hsps)
-            newrow = {"accession": accession, "pid": percentage_identity}
+            tax, org = entrez_tax_assign(accession)
+            newrow = {
+                "accession": accession,
+                "pid": percentage_identity,
+                "tax": tax,
+                "org": org,
+            }
             df.loc[i] = newrow
-
     return df
 
 
@@ -102,7 +115,9 @@ count = 0
 for seq in fasta_sequences:
     if count == 0:
         count += 1
-        data = blast_search(seq.sequence)
+        data = blast_search(
+            seq.sequence
+        )  # Esto devuelve un DF con todos los alineamientos de una secuencia
         print(data)
     else:
         break
