@@ -5,6 +5,8 @@ import pandas as pd
 from Bio import Entrez
 from Bio.Blast import NCBIWWW, NCBIXML
 
+Entrez.email = "joaquin.messano@gmail.com"
+
 
 # Defining classes
 class Fasta(object):
@@ -55,8 +57,8 @@ def entrez_tax_assign(accession):
     return taxonomy, organism
 
 
-def blast_search(sequence):
-    cols = ["accession", "pid","tax","org"]
+def blast_search(sequence, pid_cutoff):
+    cols = ["accession", "pid", "tax", "org"]
     df = pd.DataFrame(columns=cols)
     # Perform a BLAST search using the NCBIWWW.qblast function
     result_handle = NCBIWWW.qblast("blastn", "nt", sequence)
@@ -77,6 +79,17 @@ def blast_search(sequence):
                 "org": org,
             }
             df.loc[i] = newrow
+
+            df.to_csv("test.csv", index=False)
+    # df = df.loc[df["pid"] >= pid_cutoff]
+    # taxtable = df["tax"].str.split(";", expand=True)
+    # taxtable_const = taxtable.copy()
+    # print(taxtable)
+    # keep = True
+    # taxlist = []
+    # i = 0
+    # while keep:
+    #     col = taxtable.iloc[:, i]
     return df
 
 
@@ -105,6 +118,7 @@ def fasta_iterator(input_file):
 # Parsing user input
 try:
     fasta_file = sys.argv[1]  # Input fasta file
+    perc_id = float(sys.argv[2]) * 100  # porcentaje de similaridad para cortar
 except:
     print(__doc__)
     sys.exit(0)
@@ -116,7 +130,7 @@ for seq in fasta_sequences:
     if count == 0:
         count += 1
         data = blast_search(
-            seq.sequence
+            seq.sequence, perc_id
         )  # Esto devuelve un DF con todos los alineamientos de una secuencia
         print(data)
     else:
