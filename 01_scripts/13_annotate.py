@@ -80,17 +80,20 @@ def blast_search(sequence, pid_cutoff):
             }
             df.loc[i] = newrow
 
-            df.to_csv("test.csv", index=False)
-    # df = df.loc[df["pid"] >= pid_cutoff]
-    # taxtable = df["tax"].str.split(";", expand=True)
-    # taxtable_const = taxtable.copy()
-    # print(taxtable)
-    # keep = True
-    # taxlist = []
-    # i = 0
-    # while keep:
-    #     col = taxtable.iloc[:, i]
-    return df
+    df = df.loc[df["pid"] >= pid_cutoff]
+    taxtable = df["tax"].str.split("; ", expand=True)
+    keep = True
+    taxlist = []
+    i = 0
+    while keep and taxtable.shape[1] > i:
+        col = taxtable.iloc[:, i]
+        if col.unique().size == 1:
+            keep = True
+            taxlist.append(col.unique()[0])
+            i += 1
+        else:
+            keep = False
+    return taxlist
 
 
 def fasta_iterator(input_file):
@@ -126,12 +129,14 @@ except:
 fasta_sequences = fasta_iterator(fasta_file)
 
 count = 0
+result = []
 for seq in fasta_sequences:
-    if count == 0:
-        count += 1
-        data = blast_search(
-            seq.sequence, perc_id
-        )  # Esto devuelve un DF con todos los alineamientos de una secuencia
-        print(data)
-    else:
-        break
+    print(f"Sequence {count}")
+    data = blast_search(
+        seq.sequence, perc_id
+    )  # Esto devuelve un DF con todos los alineamientos de una secuencia
+    tax_joined = "_".join(data)
+    result.append([seq.name, seq.sequence, tax_joined])
+    count += 1
+df = pd.DataFrame(result, columns=["name", "sequence", "tax"])
+df.to_csv("result_097.csv", index=False)
