@@ -132,9 +132,8 @@ count = 0
 result = []
 for seq in fasta_sequences:
     print(f"Sequence {count}")
-    data = blast_search(
-        seq.sequence, perc_id
-    )  # Esto devuelve un DF con todos los alineamientos de una secuencia
+    # Devuelve una lista de taxones(["Eukaryota","Metazoa",...,"Homo"])
+    data = blast_search(seq.sequence, perc_id)
     tax_joined = "_".join(data)
     result.append([seq.name, seq.sequence, tax_joined])
     count += 1
