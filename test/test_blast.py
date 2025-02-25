@@ -50,15 +50,40 @@ def fasta_iterator(input_file):
 # Parsing user input
 try:
     centroid_file = sys.argv[1]  # Input fasta file
+    clusters_file = sys.argv[2]  # clusters tsv
 except:
     print(__doc__)
     sys.exit(0)
-
+colnames = [
+    "record_type",
+    "cluster_number",
+    "sequence_length",
+    "pid",
+    "strand",
+    "legacy",
+    "legacy2",
+    "alignment",
+    "qlabel",
+    "tlabel",
+]
 result_file = "hola"
 centroids_iterator = fasta_iterator(centroid_file)
-
+clusters_table = pd.read_csv(clusters_file, sep="\t", names=colnames)
+# armé centroids
+# grep '^C' test/clusters.uc para ver como están los clusters
+# grep '^S' test/clusters.uc para ver los centroides
+# grep '^H' test/clusters.uc para ver los hits
 centroid_dict = {}
 for seq in centroids_iterator:
     centroid_dict[seq.name] = []
 
-print(centroid_dict)
+for k in centroid_dict.keys():
+    lista_matches = list(
+        clusters_table.loc[
+            (clusters_table["record_type"] == "H") & (clusters_table["tlabel"] == k)
+        ]["qlabel"]
+    )
+    centroid_dict[k] = lista_matches
+
+# hice la red
+# chequear con result_097.csv como anda el blast
