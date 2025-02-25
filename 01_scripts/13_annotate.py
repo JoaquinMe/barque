@@ -130,6 +130,10 @@ fasta_sequences = fasta_iterator(fasta_file)
 
 count = 0
 result = []
+# TODO:
+# clusterizar antes de mandar a blast
+# agarrar los centroides y tirar esos a blast
+# anotar esos en la bd
 for seq in fasta_sequences:
     print(f"Sequence {count}")
     # Devuelve una lista de taxones(["Eukaryota","Metazoa",...,"Homo"])

@@ -51,6 +51,7 @@ def fasta_iterator(input_file):
 try:
     centroid_file = sys.argv[1]  # Input fasta file
     clusters_file = sys.argv[2]  # clusters tsv
+    result_file = sys.argv[3]  # result_097.csv
 except:
     print(__doc__)
     sys.exit(0)
@@ -66,16 +67,16 @@ colnames = [
     "qlabel",
     "tlabel",
 ]
-result_file = "hola"
 centroids_iterator = fasta_iterator(centroid_file)
 clusters_table = pd.read_csv(clusters_file, sep="\t", names=colnames)
+result_table = pd.read_csv(result_file, sep=",")
 # armé centroids
 # grep '^C' test/clusters.uc para ver como están los clusters
 # grep '^S' test/clusters.uc para ver los centroides
 # grep '^H' test/clusters.uc para ver los hits
 centroid_dict = {}
 for seq in centroids_iterator:
-    centroid_dict[seq.name] = []
+    centroid_dict[seq.name] = {}
 
 for k in centroid_dict.keys():
     lista_matches = list(
@@ -83,7 +84,25 @@ for k in centroid_dict.keys():
             (clusters_table["record_type"] == "H") & (clusters_table["tlabel"] == k)
         ]["qlabel"]
     )
-    centroid_dict[k] = lista_matches
+    centroid_dict[k] = {ele: "" for ele in lista_matches}
 
-# hice la red
-# chequear con result_097.csv como anda el blast
+
+# centroid_dict[centroid][child]="asignación taxonomica"
+# asigno taxonomia al diccionario
+for centroid in centroid_dict.keys():
+    for child in centroid_dict[centroid].keys():
+        # encontrar en la tabla la asignacion taxonómica del child
+        tax = result_table.loc[result_table["name"] == child]["tax"].iloc[0]
+        centroid_dict[centroid][child] = tax
+
+
+# chequeo como da la asignación
+tax_check = {k: set() for k in centroid_dict.keys()}
+for centroid in centroid_dict.keys():
+    for child in centroid_dict[centroid].keys():
+        tax_check[centroid].add(centroid_dict[centroid][child])
+
+for k in tax_check:
+    print(tax_check[k])
+    print(len(tax_check[k]))
+    print()
