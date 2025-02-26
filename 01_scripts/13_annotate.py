@@ -1,4 +1,6 @@
 import gzip
+import os
+import subprocess
 import sys
 
 import pandas as pd
@@ -120,13 +122,27 @@ def fasta_iterator(input_file):
 
 # Parsing user input
 try:
-    fasta_file = sys.argv[1]  # Input fasta file
-    perc_id = float(sys.argv[2]) * 100  # porcentaje de similaridad para cortar
+    most_frequent_file = sys.argv[1]  # Input fasta file
+    perc_id = str(sys.argv[2])  # porcentaje de similaridad para cortar
 except:
     print(__doc__)
     sys.exit(0)
 
-fasta_sequences = fasta_iterator(fasta_file)
+result_cluster = subprocess.run(
+    [
+        "vsearch",
+        "--cluster_fast",
+        most_frequent_file,
+        "--id",
+        perc_id,
+        "--centroids",
+        "15_annotate/centroids.fasta",
+        "--uc",
+        "15_annotate/clusters.uc",
+    ],
+    text=True,
+    capture_output=True,
+)
 
 count = 0
 result = []
@@ -134,12 +150,14 @@ result = []
 # clusterizar antes de mandar a blast
 # agarrar los centroides y tirar esos a blast
 # anotar esos en la bd
-for seq in fasta_sequences:
-    print(f"Sequence {count}")
-    # Devuelve una lista de taxones(["Eukaryota","Metazoa",...,"Homo"])
-    data = blast_search(seq.sequence, perc_id)
-    tax_joined = "_".join(data)
-    result.append([seq.name, seq.sequence, tax_joined])
-    count += 1
-df = pd.DataFrame(result, columns=["name", "sequence", "tax"])
-df.to_csv("result_097.csv", index=False)
+
+
+# for seq in fasta_sequences:
+#     print(f"Sequence {count}")
+#     # Devuelve una lista de taxones(["Eukaryota","Metazoa",...,"Homo"])
+#     data = blast_search(seq.sequence, perc_id)
+#     tax_joined = "_".join(data)
+#     result.append([seq.name, seq.sequence, tax_joined])
+#     count += 1
+# df = pd.DataFrame(result, columns=["name", "sequence", "tax"])
+# df.to_csv("result_097.csv", index=False)
