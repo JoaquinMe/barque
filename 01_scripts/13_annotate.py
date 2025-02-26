@@ -130,27 +130,18 @@ except:
 
 result_cluster = subprocess.run(
     [
-        "vsearch",
-        "--cluster_fast",
-        most_frequent_file,
-        "--id",
-        perc_id,
-        "--centroids",
-        "15_annotate/centroids.fasta",
-        "--uc",
-        "15_annotate/clusters.uc",
+        f"vsearch --cluster_fast {most_frequent_file} -id {perc_id} --centroids 15_annotate/centroids.fasta --uc 15_annotate/clusters.uc"
     ],
     text=True,
     capture_output=True,
+    shell=True,
 )
-
 count = 0
 result = []
 # TODO:
 # clusterizar antes de mandar a blast
 # agarrar los centroides y tirar esos a blast
 # anotar esos en la bd
-
 
 # for seq in fasta_sequences:
 #     print(f"Sequence {count}")
